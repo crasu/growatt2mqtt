@@ -10,8 +10,7 @@ The sketch also publishes the live statistics every 4 seconds. These are stored 
 Inverter run state, Input power, PV1 and PV2 voltage current and power, Output power, Grid frequency, Energy generated today and total and these for both PV1 and PV2, 3 temperatures, Inverter output PF now, Derating mode, Fault and warning codes.
 
 ## Install
-Download this repository and build and flash your ESP. As I said the code works for 1 phase 2 string inverters, if you have a 3 phase inverter, or more strings the code will still work, but you will not see all the data in the device. For BOM and PCB scroll down for the relevant sections below.
-You need an Arduino IDE with ESP8266 configuration added. You need a few additional libraries (see below). And before you build open the settings.h and set your credentials. I think they are self explanatory. Compile and upload.
+Download the repo, adapt and rename settings.h.sample to src/settings.h. Compile and upload with platform io. As I said the code works for 1 phase 2 string inverters, if you have a 3 phase inverter, or more strings the code will still work, but you will not see all the data in the device. For BOM and PCB scroll down for the relevant sections below.
 
 ## Wiring
 For MIN solar inverters, you need to use the SYS COM port on the underside of the unit. The special connector is supplied with the inverter.
@@ -21,13 +20,6 @@ For MIN solar inverters, you need to use the SYS COM port on the underside of th
 Disassemble the connector (see instructions in the user manual) and use PIN3 and PIN4 for the modbus connection. It is PIN3 for RS485A1 and PIN4 for RS485B1. The pin numbers are clearly labeled on the connector inside. RS485A1 connects to the A pin (green screw terminal) on the RS485toTTL board and RS485B1 connects to B. I used a pair of thin wires from a CAT5 network cable.
 
 ![Pins](/img/portpins.png)
-
-## Libraries
-The following libraries are used beside the "Standard" ESP8266 libraries:
-- FastLED by Daniel Garcia
-- ModbusMaster by Doc Walker
-- ArduinoOTA
-- SoftwareSerial
 
 ## PCB
 
