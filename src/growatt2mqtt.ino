@@ -4,7 +4,6 @@
 // 1 Phase, 2 string inverter version such as MIN 3000 TL-XE, MIC 1500 TL-X
 
 // Libraries:
-// - FastLED by Daniel Garcia
 // - ModbusMaster by Doc Walker
 // - ArduinoOTA
 // - SoftwareSerial
@@ -21,7 +20,6 @@
 #include <PubSubClient.h>         // MQTT support
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-#include <FastLED.h>
 #include "globals.h"
 #include "settings.h"
 
@@ -34,7 +32,6 @@ PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
 // SoftwareSerial modbus(MAX485_RX, MAX485_TX, false, 256); //RX, TX
 SoftwareSerial modbus(MAX485_RX, MAX485_TX, false); //RX, TX
 ModbusMaster growatt;
-CRGB leds[NUM_LEDS];
 
 void preTransmission() {
   digitalWrite(MAX485_RE_NEG, 1);
@@ -88,8 +85,6 @@ void ReadInputRegisters() {
   char topic[80];
   char value[10]; 
 
-  leds[0] = CRGB::Yellow;
-  FastLED.show();
   uint8_t result;
 
   digitalWrite(STATUS_LED, 0);
@@ -99,11 +94,6 @@ void ReadInputRegisters() {
   ESP.wdtEnable(1);
   if (result == growatt.ku8MBSuccess)   {
 
-    leds[0] = CRGB::Green;
-    FastLED.show();
-    lastRGB = millis();
-    ledoff = true;
-    
     #ifdef DEBUG_SERIAL
       Serial.print("InputReg page");
       Serial.print(setcounter);
@@ -301,19 +291,9 @@ void ReadInputRegisters() {
     //mqtt.publish(topic,"OK");
 
   } else {
-    leds[0] = CRGB::Red;
-    FastLED.show();
-    lastRGB = millis();
-    ledoff = true;
-
     Serial.print(F("Error: "));
     sendModbusError(result);
   }
-  digitalWrite(STATUS_LED, 1);
-
-
-
-    
 }
 
 void ReadHoldingRegisters() {
@@ -322,8 +302,6 @@ void ReadHoldingRegisters() {
   char value[10]; 
 
 
-  leds[0] = CRGB::Yellow;
-  FastLED.show();
   uint8_t result;
   //uint16_t data[6];
 
@@ -333,11 +311,6 @@ void ReadHoldingRegisters() {
   ESP.wdtEnable(1);
   if (result == growatt.ku8MBSuccess)   {
 
-    leds[0] = CRGB::Green;
-    FastLED.show();
-    lastRGB = millis();
-    ledoff = true;
-    
     #ifdef DEBUG_SERIAL
       Serial.print("HoldingReg Page");
       Serial.print(setcounter);
@@ -462,21 +435,11 @@ void ReadHoldingRegisters() {
     }
     //sprintf(topic,"%s/error",topicRoot);
     //mqtt.publish(topic,"OK");
-
-
   } else {
-    leds[0] = CRGB::Red;
-    FastLED.show();
-    lastRGB = millis();
-    ledoff = true;
-
     Serial.print(F("Error: "));
     sendModbusError(result);
   }
   digitalWrite(STATUS_LED, 1);
-
-
-    
 }
 
 
@@ -547,11 +510,6 @@ void reconnect() {
 
 void setup() {
 
-  FastLED.addLeds<LED_TYPE, RGBLED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalSMD5050 );
-  FastLED.setBrightness( BRIGHTNESS );
-  leds[0] = CRGB::Pink;
-  FastLED.show();
-
   Serial.begin(SERIAL_RATE);
   Serial.println(F("\nGrowatt Solar Inverter to MQTT Gateway"));
   // Init outputs, RS485 in receive mode
@@ -564,8 +522,6 @@ void setup() {
   // Initialize some variables
   uptime = 0;
   seconds = 0;
-  leds[0] = CRGB::Pink;
-  FastLED.show();
 
   // Connect to Wifi
   Serial.print(F("Connecting to Wifi"));
@@ -655,10 +611,6 @@ void setup() {
   ArduinoOTA.begin();
 
   modbus.begin(MODBUS_RATE);
-  
-  leds[0] = CRGB::Black;
-  FastLED.show();
-  
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -671,8 +623,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print(F("], "));
   Serial.println(message);
-
-
 }
 
 void loop() {
@@ -702,12 +652,4 @@ void loop() {
     }
     lastWifiCheck = millis();
   }
-
-  if (ledoff && (millis() - lastRGB >= RGBSTATUSDELAY)) {
-    ledoff = false;
-    leds[0] = CRGB::Black;
-    FastLED.show();
-  }
-
-
 }

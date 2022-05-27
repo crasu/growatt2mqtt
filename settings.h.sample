@@ -10,14 +10,7 @@
 #define STATUS_LED      2         // Status LED on the Wemos D1 mini (D4)
 #define UPDATE_MODBUS   2         // 1: modbus device is read every second
 #define UPDATE_STATUS   30        // 10: status mqtt message is sent every 10 seconds
-#define RGBSTATUSDELAY  500       // delay for turning off the status led
 #define WIFICHECK       500       // how often check lost wifi connection
-
-#define RGBLED_PIN D3        // Neopixel led D3
-#define NUM_LEDS 1
-#define LED_TYPE    WS2812
-#define COLOR_ORDER GRB
-#define BRIGHTNESS  64        // Default LED brightness.
 
 // Update the below parameters for your project
 // Also check NTP.h for some parameters as well
